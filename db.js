@@ -6,6 +6,9 @@ mongoose.connect(MONGO_URL);
 const userSchema =new mongoose.Schema({
     email : {type:String ,required:true,unique:true},
     password : {type:String,required:true},
+    googleId: String,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
     
 },{timestamps:true});
 export const userModel = new mongoose.model("user",userSchema);

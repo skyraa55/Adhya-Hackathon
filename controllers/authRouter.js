@@ -4,9 +4,30 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from'dotenv';
 import crypto from "crypto";
+import passport from "../config/passport.js";
 const router = express.Router();
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: "/login" }),
+  async (req, res) => {
+    const token = jwt.sign(
+      { id: req.user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "Google login successful",
+      token,
+    });
+  }
+);
 router.post('/signup',async (req,res)=>{
     const email = req.body.email;
     const password = req.body.password;
